@@ -113,6 +113,9 @@ textarea{
 <button onclick="translitToRussian()">Translit → Русский</button>
 <button onclick="russianToTranslit()">Русский → Translit</button>
 <button onclick="hebrewToRussian()">עברית → Русский</button>
+    <button onclick="insertChar(' ')">␣ Пробел</button>
+<button onclick="backspace()">⌫ Backspace</button>
+<button onclick="insertChar('\n')">↵ Enter</button>
 <button onclick="swapText()">⇄ Поменять</button>
 <button onclick="copyResult()">Копировать</button>
 <button onclick="clearAll()">Очистить</button>
@@ -141,7 +144,8 @@ textarea{
 <h3 style="margin-top:20px;">עברית</h3>
 
 <div class="keys" id="heKeys"></div>
-
+<h3>English</h3>
+<div class="keys" id="enKeys"></div>
 </div>
 
 </div>
@@ -292,7 +296,16 @@ function hebrewToRussian(){
 
     result.value = out;
 }
+function insertChar(ch){
+    source.value += ch;
+    source.focus();
+}
 
+function backspace(){
+    source.value =
+        source.value.slice(0,-1);
+    source.focus();
+}
 function swapText(){
 
     let a = source.value;
@@ -317,6 +330,8 @@ const ruLetters =
 
 const heLetters =
 "אבגדהוזחטיכלמנסעפצקרשת".split("");
+const enLetters =
+"QWERTYUIOPASDFGHJKLZXCVBNM".split("");
 
 function buildKeyboard(id,letters){
 
@@ -342,6 +357,7 @@ function buildKeyboard(id,letters){
 
 buildKeyboard("ruKeys",ruLetters);
 buildKeyboard("heKeys",heLetters);
+buildKeyboard("enKeys",enLetters);
 
 </script>
 
