@@ -60,4 +60,290 @@ button:hover{
 textarea{
     width:100%;
     height:350px;
-    background
+    background:#1e1e1e;
+    color:white;
+    border:1px solid #333;
+    border-radius:12px;
+    padding:15px;
+    resize:none;
+    font-size:18px;
+}
+
+.keyboard{
+    margin-top:20px;
+}
+
+.keyboard h3{
+    text-align:center;
+}
+
+.keys{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+}
+
+.key{
+    min-width:40px;
+}
+
+@media(max-width:800px){
+
+    .row{
+        grid-template-columns:1fr;
+    }
+
+    textarea{
+        height:250px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🚀 Translit PRO</h1>
+
+<div class="toolbar">
+<button onclick="translitToRussian()">Translit → Русский</button>
+<button onclick="russianToTranslit()">Русский → Translit</button>
+<button onclick="hebrewToRussian()">עברית → Русский</button>
+<button onclick="swapText()">⇄ Поменять</button>
+<button onclick="copyResult()">Копировать</button>
+<button onclick="clearAll()">Очистить</button>
+</div>
+
+<div class="row">
+
+<div>
+<h3>Исходный текст</h3>
+<textarea id="source"></textarea>
+</div>
+
+<div>
+<h3>Результат</h3>
+<textarea id="result"></textarea>
+</div>
+
+</div>
+
+<div class="keyboard">
+
+<h3>Русская клавиатура</h3>
+
+<div class="keys" id="ruKeys"></div>
+
+<h3 style="margin-top:20px;">עברית</h3>
+
+<div class="keys" id="heKeys"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const source = document.getElementById("source");
+const result = document.getElementById("result");
+
+const translitPairs = [
+
+["Shch","Щ"],["SCH","Щ"],["sch","щ"],
+
+["Yo","Ё"],["YO","Ё"],["yo","ё"],
+["Zh","Ж"],["ZH","Ж"],["zh","ж"],
+["Kh","Х"],["KH","Х"],["kh","х"],
+["Ts","Ц"],["TS","Ц"],["ts","ц"],
+["Ch","Ч"],["CH","Ч"],["ch","ч"],
+["Sh","Ш"],["SH","Ш"],["sh","ш"],
+["Yu","Ю"],["YU","Ю"],["yu","ю"],
+["Ya","Я"],["YA","Я"],["ya","я"],
+
+["A","А"],["a","а"],
+["B","Б"],["b","б"],
+["V","В"],["v","в"],
+["G","Г"],["g","г"],
+["D","Д"],["d","д"],
+["E","Е"],["e","е"],
+["Z","З"],["z","з"],
+["I","И"],["i","и"],
+["J","Й"],["j","й"],
+["K","К"],["k","к"],
+["L","Л"],["l","л"],
+["M","М"],["m","м"],
+["N","Н"],["n","н"],
+["O","О"],["o","о"],
+["P","П"],["p","п"],
+["R","Р"],["r","р"],
+["S","С"],["s","с"],
+["T","Т"],["t","т"],
+["U","У"],["u","у"],
+["F","Ф"],["f","ф"],
+["Y","Ы"],["y","ы"],
+
+["''","Ъ"],
+["'","Ь"]
+];
+
+function translitToRussian(){
+
+    let txt = source.value;
+
+    translitPairs
+      .sort((a,b)=>b[0].length-a[0].length)
+      .forEach(pair=>{
+          txt = txt.split(pair[0]).join(pair[1]);
+      });
+
+    result.value = txt;
+}
+
+const ruToLat = {
+
+"А":"A","а":"a",
+"Б":"B","б":"b",
+"В":"V","в":"v",
+"Г":"G","г":"g",
+"Д":"D","д":"d",
+"Е":"E","е":"e",
+"Ё":"Yo","ё":"yo",
+"Ж":"Zh","ж":"zh",
+"З":"Z","з":"z",
+"И":"I","и":"i",
+"Й":"J","й":"j",
+"К":"K","к":"k",
+"Л":"L","л":"l",
+"М":"M","м":"m",
+"Н":"N","н":"n",
+"О":"O","о":"o",
+"П":"P","п":"p",
+"Р":"R","р":"r",
+"С":"S","с":"s",
+"Т":"T","т":"t",
+"У":"U","у":"u",
+"Ф":"F","ф":"f",
+"Х":"Kh","х":"kh",
+"Ц":"Ts","ц":"ts",
+"Ч":"Ch","ч":"ch",
+"Ш":"Sh","ш":"sh",
+"Щ":"Sch","щ":"sch",
+"Ы":"Y","ы":"y",
+"Э":"E","э":"e",
+"Ю":"Yu","ю":"yu",
+"Я":"Ya","я":"ya",
+"Ь":"'","ь":"'",
+"Ъ":"''","ъ":"''"
+};
+
+function russianToTranslit(){
+
+    let out = "";
+
+    for(let ch of source.value){
+        out += ruToLat[ch] || ch;
+    }
+
+    result.value = out;
+}
+
+const hebrewMap = {
+
+"א":"а",
+"ב":"б",
+"ג":"г",
+"ד":"д",
+"ה":"х",
+"ו":"в",
+"ז":"з",
+"ח":"х",
+"ט":"т",
+"י":"й",
+"כ":"к",
+"ך":"к",
+"ל":"л",
+"מ":"м",
+"ם":"м",
+"נ":"н",
+"ן":"н",
+"ס":"с",
+"ע":"а",
+"פ":"п",
+"ף":"п",
+"צ":"ц",
+"ץ":"ц",
+"ק":"к",
+"ר":"р",
+"ש":"ш",
+"ת":"т"
+};
+
+function hebrewToRussian(){
+
+    let out = "";
+
+    for(let ch of source.value){
+        out += hebrewMap[ch] || ch;
+    }
+
+    result.value = out;
+}
+
+function swapText(){
+
+    let a = source.value;
+
+    source.value = result.value;
+    result.value = a;
+}
+
+function copyResult(){
+
+    navigator.clipboard.writeText(result.value);
+}
+
+function clearAll(){
+
+    source.value="";
+    result.value="";
+}
+
+const ruLetters =
+"ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ".split("");
+
+const heLetters =
+"אבגדהוזחטיכלמנסעפצקרשת".split("");
+
+function buildKeyboard(id,letters){
+
+    const div = document.getElementById(id);
+
+    letters.forEach(letter=>{
+
+        const btn=document.createElement("button");
+
+        btn.className="key";
+        btn.textContent=letter;
+
+        btn.onclick=()=>{
+
+            source.value+=letter;
+            source.focus();
+        };
+
+        div.appendChild(btn);
+
+    });
+}
+
+buildKeyboard("ruKeys",ruLetters);
+buildKeyboard("heKeys",heLetters);
+
+</script>
+
+</body>
+</html>
