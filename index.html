@@ -110,6 +110,12 @@ textarea{
 <h1>🚀 Translit PRO</h1>
 
 <div class="toolbar">
+    <select id="mode">
+    <option value="tr_ru">Translit → Русский</option>
+    <option value="ru_tr">Русский → Translit</option>
+    <option value="he_ru">עברית → Русский</option>
+</select>
+    <br/>
 <button onclick="translitToRussian()">Translit → Русский</button>
 <button onclick="russianToTranslit()">Русский → Translit</button>
 <button onclick="hebrewToRussian()">עברית → Русский</button>
@@ -358,7 +364,24 @@ function buildKeyboard(id,letters){
 buildKeyboard("ruKeys",ruLetters);
 buildKeyboard("heKeys",heLetters);
 buildKeyboard("enKeys",enLetters);
+source.addEventListener("input", autoConvert);
 
+function autoConvert() {
+
+    const mode = document.getElementById("mode").value;
+
+    if(mode === "tr_ru"){
+        translitToRussian();
+    }
+
+    if(mode === "ru_tr"){
+        russianToTranslit();
+    }
+
+    if(mode === "he_ru"){
+        hebrewToRussian();
+    }
+}
 </script>
 
 </body>
