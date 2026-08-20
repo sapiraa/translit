@@ -72,7 +72,13 @@ textarea{
 .keyboard{
     margin-top:20px;
 }
+.hebrew{
+    direction: rtl;
+}
 
+.arabic{
+    direction: rtl;
+}
 .keyboard h3{
     text-align:center;
 }
@@ -116,6 +122,11 @@ textarea{
     <option value="he_ru">עברית → Русский</option>
     <option value="he_lat">עברית → Latin</option>
     <option value="lat_he">Latin → עברית</option>
+<option value="he_lat">עברית → Latin</option>
+<option value="lat_he">Latin → עברית</option>
+
+<option value="ar_lat">العربية → Latin</option>
+<option value="lat_ar">Latin → العربية</option>
 
 </select>
     <br/>
@@ -155,6 +166,8 @@ textarea{
 <div class="keys" id="heKeys"></div>
 <h3>English</h3>
 <div class="keys" id="enKeys"></div>
+    <h3>العربية</h3>
+<div class="keys" id="arKeys"></div>
 </div>
 
 </div>
@@ -323,6 +336,110 @@ const hebrewLatinMap = {
 "ש":"sh",
 "ת":"t"
 };
+
+    const arabicLatinMap = {
+
+"ا":"a",
+"أ":"a",
+"إ":"i",
+"آ":"aa",
+
+"ب":"b",
+"ت":"t",
+"ث":"th",
+
+"ج":"j",
+"ح":"h",
+"خ":"kh",
+
+"د":"d",
+"ذ":"dh",
+
+"ر":"r",
+"ز":"z",
+
+"س":"s",
+"ش":"sh",
+
+"ص":"s",
+"ض":"d",
+"ط":"t",
+"ظ":"z",
+
+"ع":"a",
+"غ":"gh",
+
+"ف":"f",
+"ق":"q",
+"ك":"k",
+
+"ل":"l",
+"م":"m",
+"ن":"n",
+
+"ه":"h",
+"و":"w",
+"ي":"y",
+
+"ة":"h"
+};
+    function arabicToLatin(){
+
+    let out = "";
+
+    for(let ch of source.value){
+        out += arabicLatinMap[ch] || ch;
+    }
+
+    result.value = out;
+}
+    const latinArabicMap = [
+
+["sh","ش"],
+["kh","خ"],
+["gh","غ"],
+["th","ث"],
+["dh","ذ"],
+
+["a","ا"],
+["b","ب"],
+["c","ك"],
+["d","د"],
+["e","ي"],
+["f","ف"],
+["g","ج"],
+["h","ه"],
+["i","ي"],
+["j","ج"],
+["k","ك"],
+["l","ل"],
+["m","م"],
+["n","ن"],
+["o","و"],
+["p","ب"],
+["q","ق"],
+["r","ر"],
+["s","س"],
+["t","ت"],
+["u","و"],
+["v","ف"],
+["w","و"],
+["x","كس"],
+["y","ي"],
+["z","ز"]
+];
+    function latinToArabic(){
+
+    let txt = source.value.toLowerCase();
+
+    latinArabicMap
+        .sort((a,b)=>b[0].length-a[0].length)
+        .forEach(([from,to]) => {
+            txt = txt.split(from).join(to);
+        });
+
+    result.value = txt;
+}
    const latinHebrewMap = [
     ["sh","ש"],
     ["ch","צ׳"],
@@ -391,13 +508,21 @@ function hebrewToRussian(){
     result.value = out;
 }
 function insertChar(ch){
+
     source.value += ch;
+
+    autoConvert();
+
     source.focus();
 }
 
 function backspace(){
+
     source.value =
         source.value.slice(0,-1);
+
+    autoConvert();
+
     source.focus();
 }
 function swapText(){
@@ -426,7 +551,10 @@ const heLetters =
 "אבגדהוזחטיכלמנסעפצקרשת".split("");
 const enLetters =
 "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+const arLetters =
+"ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظ".split("");
 
+buildKeyboard("arKeys", arLetters);
 function buildKeyboard(id,letters){
 
     const div = document.getElementById(id);
@@ -457,8 +585,24 @@ source.addEventListener("input", autoConvert);
 function autoConvert() {
 
     const mode = document.getElementById("mode").value;
+    if(mode === "ar_lat"){
+    arabicToLatin();
+}
+
 if(mode === "he_lat"){
     hebrewToLatin();
+}
+
+if(mode === "lat_he"){
+    latinToHebrew();
+}
+
+if(mode === "ar_lat"){
+    arabicToLatin();
+}
+
+if(mode === "lat_ar"){
+    latinToArabic();
 }
 
 if(mode === "lat_he"){
@@ -475,6 +619,18 @@ if(mode === "lat_he"){
     if(mode === "he_ru"){
         hebrewToRussian();
     }
+    if(mode.includes("he")){
+    source.dir = "rtl";
+    result.dir = "rtl";
+}
+else if(mode.includes("ar")){
+    source.dir = "rtl";
+    result.dir = "rtl";
+}
+else{
+    source.dir = "ltr";
+    result.dir = "ltr";
+}
 }
 </script>
 
