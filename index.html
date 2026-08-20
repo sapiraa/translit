@@ -127,6 +127,8 @@ textarea{
 
 <option value="ar_lat">العربية → Latin</option>
 <option value="lat_ar">Latin → العربية</option>
+        <option value="ar_he">العربية → עברית</option>
+<option value="he_ar">עברית → العربية</option>
 
 </select>
     <br/>
@@ -440,6 +442,113 @@ const hebrewLatinMap = {
 
     result.value = txt;
 }
+    const arabicHebrewMap = {
+
+"ا":"א",
+"أ":"א",
+"إ":"א",
+"آ":"א",
+
+"ب":"ב",
+"ت":"ת",
+"ث":"ת׳",
+
+"ج":"ג׳",
+"ح":"ח",
+"خ":"ח׳",
+
+"د":"ד",
+"ذ":"ד׳",
+
+"ر":"ר",
+"ز":"ז",
+
+"س":"ס",
+"ش":"ש",
+
+"ص":"צ",
+"ض":"ד",
+
+"ط":"ט",
+"ظ":"ז",
+
+"ع":"ע",
+"غ":"ע׳",
+
+"ف":"פ",
+"ق":"ק",
+"ك":"כ",
+
+"ل":"ל",
+"م":"מ",
+"ن":"נ",
+
+"ه":"ה",
+"و":"ו",
+"ي":"י",
+
+"ة":"ה"
+};
+
+function arabicToHebrew(){
+if(mode.includes("he") || mode.includes("ar")){
+    source.dir = "rtl";
+    result.dir = "rtl";
+}
+else{
+    source.dir = "ltr";
+    result.dir = "ltr";
+}
+    let out = "";
+
+    for(let ch of source.value){
+        out += arabicHebrewMap[ch] || ch;
+    }
+
+    result.value = out;
+}
+
+const hebrewArabicMap = {
+
+"א":"ا",
+"ב":"ب",
+"ג":"ج",
+"ד":"د",
+"ה":"ه",
+"ו":"و",
+"ז":"ز",
+"ח":"ح",
+"ט":"ط",
+"י":"ي",
+"כ":"ك",
+"ך":"ك",
+"ל":"ل",
+"מ":"م",
+"ם":"م",
+"נ":"ن",
+"ן":"ن",
+"ס":"س",
+"ע":"ع",
+"פ":"ف",
+"ף":"ف",
+"צ":"ص",
+"ץ":"ص",
+"ק":"ق",
+"ר":"ر",
+"ש":"ش",
+"ת":"ت"
+};
+
+function hebrewToArabic(){
+
+    let out = "";
+
+    for(let ch of source.value){
+        out += hebrewArabicMap[ch] || ch;
+    }
+
+    result.value = out;
+}
    const latinHebrewMap = [
     ["sh","ש"],
     ["ch","צ׳"],
@@ -531,6 +640,8 @@ function swapText(){
 
     source.value = result.value;
     result.value = a;
+
+    autoConvert();
 }
 
 function copyResult(){
@@ -554,7 +665,7 @@ const enLetters =
 const arLetters =
 "ضصثقفغعهخحجدشسيبلاتنمكطئءؤرﻻىةوزظ".split("");
 
-buildKeyboard("arKeys", arLetters);
+
 function buildKeyboard(id,letters){
 
     const div = document.getElementById(id);
@@ -566,11 +677,14 @@ function buildKeyboard(id,letters){
         btn.className="key";
         btn.textContent=letter;
 
-        btn.onclick=()=>{
+       btn.onclick=()=>{
 
-            source.value+=letter;
-            source.focus();
-        };
+    source.value += letter;
+
+    autoConvert();
+
+    source.focus();
+};
 
         div.appendChild(btn);
 
@@ -580,11 +694,21 @@ function buildKeyboard(id,letters){
 buildKeyboard("ruKeys",ruLetters);
 buildKeyboard("heKeys",heLetters);
 buildKeyboard("enKeys",enLetters);
+    buildKeyboard("arKeys", arLetters);
 source.addEventListener("input", autoConvert);
-
+document
+.getElementById("mode")
+.addEventListener("change", autoConvert);
 function autoConvert() {
 
     const mode = document.getElementById("mode").value;
+    if(mode === "ar_he"){
+    arabicToHebrew();
+}
+
+if(mode === "he_ar"){
+    hebrewToArabic();
+}
     if(mode === "ar_lat"){
     arabicToLatin();
 }
